@@ -1,0 +1,34 @@
+name: Docs
+
+on:
+  push:
+    branches: [ "master", "main" ]
+
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install sphinx
+          pip install .
+          # if setup is too minimal, drop the line above
+
+      - name: Build HTML docs
+        working-directory: docs
+        run: make html
+
+      - name: Upload docs artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-docs
+          path: docs/_build/html
